@@ -1,0 +1,366 @@
+<html lang="en">
+  <head>
+    <title>Combination Chart</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Did I Win TOTO?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <script th:inline="javascript">
+     /*<![CDATA[*/
+     const rawData = /*[[${ballFrequency}]]*/ [];
+     let distributionMap = {};
+
+     // Organize data into distributionMap: { number -> [slot1count, slot2count, ..., slot6count] }
+     for (let slotIndex = 0; slotIndex < rawData.length; slotIndex++) {
+       const slotKey = Object.keys(rawData[slotIndex])[0];
+       const slotData = rawData[slotIndex][slotKey];
+
+       for (const numberStr in slotData) {
+         const count = slotData[numberStr];
+         const number = parseInt(numberStr, 10);
+
+         if (!distributionMap[number]) {
+           distributionMap[number] = new Array(rawData.length).fill(0);
+         }
+         distributionMap[number][slotIndex] = count;
+       }
+     }
+
+     // Sort the numbers in ascending order
+     const allNumbers = Object.keys(distributionMap)
+                              .map(n => parseInt(n, 10))
+                              .sort((a, b) => a - b);
+
+     // Build the chart data array for Google Charts
+     const chartData = [];
+     chartData.push([
+       "Number",
+       "Slot 1",
+       "Slot 2",
+       "Slot 3",
+       "Slot 4",
+       "Slot 5",
+       "Slot 6",
+       "Total"
+     ]);
+
+     for (const num of allNumbers) {
+       const counts = distributionMap[num];
+       const total = counts.reduce((acc, val) => acc + val, 0);
+       chartData.push([num, ...counts, total]);
+     }
+
+     google.charts.load("current", { packages: ["corechart"] });
+     google.charts.setOnLoadCallback(drawComboChart);
+
+     function drawComboChart() {
+       const data = google.visualization.arrayToDataTable(chartData);
+
+       const options = {
+         title: "Ball Frequency Distribution (Combo Chart)",
+         backgroundColor: "#ffffff", // White background
+
+         bar: { groupWidth: "150px" },
+         chartArea: {
+           left: 50,
+           top: 50,
+           right: 100,
+           bottom: 50,
+           width: "80%",
+           height: "80%"
+         },
+         // Force the X-axis to show all numbers
+         hAxis: {
+           ticks: allNumbers.map(val => ({ v: val, f: val.toString() })),
+           textStyle: { color: "#000" }
+         },
+         vAxis: {
+           textStyle: { color: "#000" }
+         },
+         legend: {
+           textStyle: { color: "#000" }
+         },
+         titleTextStyle: { color: "#000" },
+
+         seriesType: "bars",
+         series: {
+           // The last series (index 6) is the "Total" line. We'll keep its default or slightly thicker line.
+           5: {
+             type: "bars",
+             lineWidth: 3,  // Adjust line thickness if needed
+             color: "#e53e3e"
+           },
+
+           6: {
+             type: "line",
+             lineWidth: 3,  // Adjust line thickness if needed
+             color: "#e53e3e"
+           }
+         }
+       };
+
+       const chart = new google.visualization.ComboChart(
+         document.getElementById("combo_chart")
+       );
+       chart.draw(data, options);
+     }
+     /*]]>*/
+    </script>
+
+  </head>
+  <body class="bg-gray-900 text-white">
+        <!--Header Section-------------------------------------------------------------------------------------------->
+    <header class="bg-gray-800 p-4 shadow-md">
+      <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-xl font-bold">Did I Win TOTO?</h1>
+        <div class="flex space-x-4">
+          <a href="/" class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition"><i class="fas fa-home"></i></a>
+          <a href="/history" class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition"><i class="fas fa-clock-rotate-left"></i></a>
+          <a href="/stats" class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition"><i class="fas fa-money-bill-wave"></i></a>
+          <a href="/location" class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition"><i class="fas fa-location-dot"></i></a>
+          <a href="/user" class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition"><i class="fas fa-user"></i></a>
+        </div>
+      </div>
+    </header>
+        <!--Header Section-------------------------------------------------------------------------------------------->
+    <main class="container mx-auto mt-10 px-6">
+
+        <!--Odds and Text Section-------------------------------------------------------------------------------------------->
+      <div class="flex flex-col md:flex-row gap-10">
+        <div class="md:w-1/2 space-y-6">
+          <section>
+            <div class="overflow-x-auto">
+              <table class="min-w-full bg-gray-800 text-left rounded-lg border-collapse border border-gray-700">
+                <thead class="bg-gray-700">
+                  <tr>
+                    <th class="border border-gray-700 py-3 px-4 font-semibold text-gray-200">Group</th>
+                    <th class="border border-gray-700 py-3 px-4 font-semibold text-gray-200">Odds of Winning</th>
+                    <th class="border border-gray-700 py-3 px-4 font-semibold text-gray-200">Prize Value</th>
+                    <th class="border border-gray-700 py-3 px-4 font-semibold text-gray-200">Odds x Prize Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Row 1 -->
+                  <tr>
+                    <td class="border border-gray-700 py-3 px-4">1</td>
+                    <td class="border border-gray-700 py-3 px-4">1 in 13,987,816</td>
+                    <td class="border border-gray-700 py-3 px-4">$12,000,000</td>
+                    <td class="border border-gray-700 py-3 px-4">$0.86</td>
+                  </tr>
+                  <!-- Row 2 -->
+                  <tr>
+                    <td class="border border-gray-700 py-3 px-4">2</td>
+                    <td class="border border-gray-700 py-3 px-4">1 in 2,330,636</td>
+                    <td class="border border-gray-700 py-3 px-4">$2,526,315</td>
+                    <td class="border border-gray-700 py-3 px-4">$1.08</td>
+                  </tr>
+                  <!-- Row 3 -->
+                  <tr>
+                    <td class="border border-gray-700 py-3 px-4">3</td>
+                    <td class="border border-gray-700 py-3 px-4">1 in 55,491</td>
+                    <td class="border border-gray-700 py-3 px-4">$1,736,842</td>
+                    <td class="border border-gray-700 py-3 px-4">$31.30</td>
+                  </tr>
+                  <!-- Row 4 -->
+                  <tr>
+                    <td class="border border-gray-700 py-3 px-4">4</td>
+                    <td class="border border-gray-700 py-3 px-4">1 in 22,197</td>
+                    <td class="border border-gray-700 py-3 px-4">$947,368</td>
+                    <td class="border border-gray-700 py-3 px-4">$42.68</td>
+                  </tr>
+                  <!-- Row 5 -->
+                  <tr>
+                    <td class="border border-gray-700 py-3 px-4">5</td>
+                    <td class="border border-gray-700 py-3 px-4">1 in 1,083</td>
+                    <td class="border border-gray-700 py-3 px-4">$50</td>
+                    <td class="border border-gray-700 py-3 px-4">$0.05</td>
+                  </tr>
+                  <!-- Row 6 -->
+                  <tr>
+                    <td class="border border-gray-700 py-3 px-4">6</td>
+                    <td class="border border-gray-700 py-3 px-4">1 in 812</td>
+                    <td class="border border-gray-700 py-3 px-4">$25</td>
+                    <td class="border border-gray-700 py-3 px-4">$0.03</td>
+                  </tr>
+                  <!-- Row 7 -->
+                  <tr>
+                    <td class="border border-gray-700 py-3 px-4">7</td>
+                    <td class="border border-gray-700 py-3 px-4">1 in 61</td>
+                    <td class="border border-gray-700 py-3 px-4">$10</td>
+                    <td class="border border-gray-700 py-3 px-4">$0.16</td>
+                  </tr>
+                  <tr>
+                    <td colspan="3" class="border border-gray-700 py-3 px-4 text-right font-semibold">
+                      Present Value:
+                    </td>
+                    <td class="border border-gray-700 py-3 px-4 text-right text-green-400 font-semibold">
+                      $76.16
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+        <div class="md:w-1/2 space-y-6">
+          <section>
+            <h2 class="text-3xl font-bold mb-4">
+              Net Present Value Of A $1 TOTO Ticket
+            </h2>
+            <p class="text-gray-300 mb-4 leading-relaxed">
+              The actual odds and prize value can only be calculated once sales close,
+              because <span class="font-semibold">54% of the sales</span> from each draw
+              is added to the existing prize pool. For demonstration purposes, we will
+              use the annual ang bao draw prize money.
+            </p>
+            <p class="text-gray-300 mb-4 leading-relaxed">
+              In this calculation, we assume that the prize pool is
+              <span class="font-semibold">$31,578,947</span>, based on
+              <span class="font-semibold">$12 million</span> being 38% of the total pool
+              and the Group 1 prize value. We also assume you buy only one TOTO ticket,
+              ignoring other participants entirely. In other words, this reflects how much
+              your TOTO ticket would be worth if you were the sole player.
+            </p>
+            <p class="text-gray-300 mb-4 leading-relaxed">
+              However, you are not the only player, and the prize pool is not always
+              <span class="font-semibold">$12 million</span>. Therefore, please note
+              that the net present value of a TOTO ticket is not actually
+              <span class="font-semibold">$76.16</span> and that this figure
+              overestimates its true value.
+            </p>
+          </section>
+        </div>
+
+      </div>
+        <!--Odds and Text Section-------------------------------------------------------------------------------------------->
+
+        <!--Ball Frequency and Number Section-------------------------------------------------------------------------------------------->
+      <div class="container mx-auto mt-10">
+        <div class="flex flex-col md:flex-row gap-8 items-start">
+          <div class="md:w-1/2">
+            <h1 class="text-2xl font-bold mb-6">Ball Frequency Combo Chart</h1>
+            <div
+              id="combo_chart"
+              style="width: 100%; height: 500px;"
+            >
+            </div>
+          </div>
+          <div class="md:w-1/2">
+            <h2 class="text-2xl font-bold mb-4 text-center">Number Frequency</h2>
+            <div class="overflow-x-auto max-w-full">
+              <div class="max-h-[500px] overflow-y-auto">
+                <table class="table-auto w-full bg-gray-800 rounded-lg shadow-md">
+                  <thead class="bg-gray-700">
+                    <tr>
+                      <th class="px-4 py-2 text-center">Number</th>
+                      <th class="px-4 py-2 text-center">Winning Frequency</th>
+                      <th class="px-4 py-2 text-center">Supplementary Frequency</th>
+                      <th class="px-4 py-2 text-center">Percentage</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <th:block th:each="freq : ${numberFrequency}">
+                      <tr class="border-t border-gray-600 text-center">
+                        <td class="px-4 py-2" th:text="${freq['Number']}"></td>
+                        <td class="px-4 py-2" th:text="${freq['Winning Frequency']}"></td>
+                        <td class="px-4 py-2" th:text="${freq['Supplementary Frequency']}"></td>
+                        <td class="px-4 py-2" th:text="${#numbers.formatDecimal(freq['Percentage'], 2, 1)} + '%'"></td>
+                      </tr>
+                    </th:block>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+        <!--Ball Frequency and Number Section-------------------------------------------------------------------------------------------->
+        <!--Pari freq Section-------------------------------------------------------------------------------------------->
+      <div class="container mt-6 mx-auto">
+        <h1 class="text-3xl font-bold mb-6">Pair Frequency Optimizer</h1>
+        <div class="flex flex-col md:flex-row gap-6 items-start">
+          <div class="md:w-1/2 p-4 rounded shadow">
+            <h2 class="text-lg font-bold mb-4">Pair Frequency Matrix</h2>
+            <div class="max-h-[500px] overflow-auto">
+              <table class="min-w-full border-collapse">
+                <thead>
+                  <tr>
+                    <th class="sticky top-0 left-0 bg-gray-700 text-white z-20 px-4 py-2 text-center">
+                      #
+                    </th>
+                    <th
+                      th:each="val : ${#numbers.sequence(1, 49)}"
+                      class="sticky top-0 bg-gray-700 text-white z-10 px-4 py-2 text-center"
+                      th:text="${val}"
+                    ></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="rowNum : ${#numbers.sequence(1, 49)}">
+                    <td
+                      class="sticky left-0 bg-gray-700 text-white z-10 px-4 py-2 text-center"
+                      th:text="${rowNum}"
+                    ></td>
+                    <td
+                      th:each="colNum : ${#numbers.sequence(1, 49)}"
+                      class="px-4 py-2 text-center bg-gray-800"
+                      th:text="${pairFrequency[rowNum.toString()][colNum.toString()]}"
+                    ></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="md:w-1/2 p-4 rounded shadow">
+            <h2 class="text-xl font-bold mb-4">Pick Your Numbers</h2>
+            <div class="grid grid-cols-7 gap-2 mb-4">
+              <label
+                th:each="n : ${#numbers.sequence(1, 49)}"
+                class="cursor-pointer w-12 h-12 flex items-center justify-center
+                         bg-gray-800 text-white rounded transition-colors
+                         hover:bg-gray-700"
+              >
+                <input
+                  type="checkbox"
+                  class="hidden"
+                  name="numbers"
+                  th:value="${n}"
+                />
+                <span class="pointer-events-none" th:text="${n}"></span>
+              </label>
+            </div>
+
+            <!-- Selected Numbers and Recommendations -->
+            <div class="flex flex-col md:flex-row gap-6 mb-4">
+              <div>
+                <p class="text-sm font-semibold">Numbers Selected:</p>
+                <p id="selectedNumbers" class="text-sm"></p>
+                <br/>
+                <button
+                  id="recommendBtn"
+                  type="button"
+                  class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded font-semibold"
+                >
+                  Recommend
+                </button>
+              </div>
+
+              <div id="recommendation-section" class="hidden">
+                <p class="text-sm font-semibold">Recommended Numbers:</p>
+                <ul id="recommendation-list" class="text-sm text-green-500"></ul>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+        <!--Pari freq Section-------------------------------------------------------------------------------------------->
+    </main>
+    <script th:src="@{/js/selectedNumbers.js}"></script>
+    <script th:src="@{/js/callrecommendation.js}"></script>
+
+  </body>
+</html>

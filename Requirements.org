@@ -1,0 +1,57 @@
+* Mini-Project Requirements Checklist
+** Spring Boot
+- [ ] Must handle HTTP POST and GET requests
+- [ ] Must include parameterized routes (@PathVariable)
+- [ ] Must include validation
+- [ ] Must include both MVC (@Controller) and REST endpoints (@RestController)
+- [ ] POST must consume either form-urlencoded or JSON payload
+- [ ] Must support more than 1 user
+- [ ] Must include a minimum of 3 views (excluding REST endpoints)
+
+** RESTful API
+- [ ] Make HTTP requests to an external RESTful API
+- [ ] Use REST endpoints not discussed in class or assessments
+  - Examples of disallowed APIs: Open Weather Map, Giphy, News, etc.
+- [ ] Include another external endpoint beyond those used in class workshops or demos
+
+** HTML/CSS
+- [X] Use CSS to style the user interface
+- [X] Write custom CSS or use CSS frameworks like Bootstrap, Tailwind, or Bulma
+  - [X] Ensure a visually appealing Look-n-Feel for the application
+
+** Database
+- [ ] Use a Redis database running in the ‘cloud’
+  - [ ] Provision the instance from Redis Labs or a cloud provider like Digital Ocean or AWS
+
+** Deployment
+- [ ] Deploy the application to Railway or another public cloud provider
+- [X] Ensure the Spring Boot application is deployed on JDK 22
+- [ ] Ensure the Redis database is in the 'cloud'
+- [ ] Present the application from the deployed version (not a local notebook)
+
+** Presentation
+- [X] Ensure the application is ‘live’ before the presentation
+- [X] Prepare to present the application within a 10-minute time slot
+- [X] Plan to present on the provided computer or mobile phone
+
+** Submission
+- [ ] Push the project to a repository on GitHub, GitLab, or BitBucket
+- [ ] Ensure all commits are made before 0900 Dec 30 2024
+
+
+TODOS
+** Home page
+- [X] Fix home page and check winning (2 hours)
+** History page
+- [ ] Fix history page and scrolling (30 mins)
+** Statistic page
+- [ ] Aesthetic fix (30 mins)
+- [ ] Fix Charts (2 hours)
+- [ ] Number Recommendation (3 hours)
+** Maps
+- [ ] Google Maps API Fix with post (5 hours)
+- [ ] Google Maps aesthetic fix (1 hour)
+** User
+- [ ] Check if user login in the forms (1 hour)
+- [ ] Store user old numbers (3 hours)
+- [ ] See old numbers and potential won (2 hours)

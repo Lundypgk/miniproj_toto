@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        <title>Did I Win TOTO?</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBeT2Nqze7ESXylU7WNo7Hde4NdWZT1N-g&libraries=places"></script>
+    </head>
+    <body class="bg-gray-900 text-white">
+
+        <style type="text/css">
+         input[type=number]::-webkit-inner-spin-button,
+         input[type=number]::-webkit-outer-spin-button {
+             -webkit-appearance: none;
+             -moz-appearance: none;
+             appearance: none;
+             margin: 0;
+         }
+
+        </style>
+        <!--Header Section-------------------------------------------------------------------------------------------->
+        <header class="bg-gray-800 p-4 shadow-md">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-xl font-bold">Did I Win TOTO?</h1>
+                <div class="flex space-x-4">
+                    <a href="/" class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition">
+                        <i class="fas fa-home"></i>
+                    </a>
+                    <a href="/history" class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition">
+                        <i class="fas fa-clock-rotate-left"></i>
+                    </a>
+                    <a href="/stats" class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </a>
+                    <a href="/location" class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition">
+                        <i class="fas fa-location-dot"></i>
+                    </a>
+                    <a href="/user" class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition">
+                        <i class="fas fa-user"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+        <!--Header Section-------------------------------------------------------------------------------------------->
+        <main class="container mx-auto mt-10 px-6">
+            <div class="bg-gray-800 p-6 rounded-lg shadow-md">
+                <h1 class="text-3xl font-bold mb-6 text-center">User Dashboard</h1>
+                <!--Login Section-------------------------------------------------------------------------------------------->
+                <div class="bg-gray-800 p-6 rounded shadow-md" th:if="${user == null}">
+                    <h2 class="text-2xl font-bold mb-4 text-center">Login</h2>
+                    <form th:action="@{/user/login}" method="POST" class="flex flex-col gap-4">
+                        <!-- Username -->
+                        <input
+                            type="text"
+                            name="username"
+                            placeholder="Username"
+                            required
+                            class="p-2 bg-gray-700 rounded text-white outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <!-- Password -->
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            required
+                            class="p-2 bg-gray-700 rounded text-white outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <!-- Submit Button -->
+                        <button
+                            type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded font-semibold"
+                        >
+                            Login
+                        </button>
+                    </form>
+                    <p th:if="${loginerror}" class="text-red-500 mt-2" th:text="${loginerror}"></p>
+                </div>
+                <!--Login Section-------------------------------------------------------------------------------------------->
+                <!--Signup Section-------------------------------------------------------------------------------------------->
+                <div class="bg-gray-800 p-6 rounded shadow-md" th:if="${user == null}">
+                    <h2 class="text-2xl font-bold mb-4 text-center">Sign Up</h2>
+                    <form th:action="@{/user/signup}" method="POST" class="flex flex-col gap-4">
+                <!-- Username -->
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="Username"
+                    required
+                    class="p-2 bg-gray-700 rounded text-white outline-none focus:ring-2 focus:ring-green-500"
+                />
+                <!-- Password -->
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    required
+                    class="p-2 bg-gray-700 rounded text-white outline-none focus:ring-2 focus:ring-green-500"
+                />
+                <!-- Confirm Password -->
+                <input
+                    type="password"
+                    name="confirmPassword"
+                    placeholder="Confirm Password"
+                    required
+                    class="p-2 bg-gray-700 rounded text-white outline-none focus:ring-2 focus:ring-green-500"
+                />
+                <!-- Submit Button -->
+                <button
+                    type="submit"
+                    class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded font-semibold"
+                >
+                    Sign Up
+                </button>
+                    </form>
+                    <p th:if="${error}" class="text-red-500 mt-2" th:text="${error}"></p>
+                </div>
+                <!--Signup Section-------------------------------------------------------------------------------------------->
+                <!--Create TIcker Section-------------------------------------------------------------------------------------------->
+                <div class="mb-6" th:if="${user != null}">
+                    <h2 class="text-xl font-bold mb-4">Create a Ticket</h2>
+                    <form th:action="@{'/user/' + ${user.userId} + '/create-ticket'}" method="POST" class="flex flex-col gap-4">
+                        <div class="relative w-full">
+                            <select id="betTypeSelect" name="betType" required class="bg-gray-700 p-4 rounded text-white text-lg font-medium outline-none w-full focus:ring-2 focus:ring-blue-500 appearance-none pr-10">
+                                <option value="Ordinary">Ordinary</option>
+                                <option value="System 7">System 7</option>
+                                <option value="System 8">System 8</option>
+                                <option value="System 9">System 9</option>
+                                <option value="System 10">System 10</option>
+                                <option value="System 11">System 11</option>
+                                <option value="System 12">System 12</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div id="numberInputs" class="grid grid-cols-6 gap-4"></div>
+                        <label for="purchaseDate" class="text-sm font-semibold">Purchase Date</label>
+                        <input
+                            type="date"
+                            id="purchaseDate"
+                            name="purchaseDate"
+                            required
+                            class="p-2 bg-gray-700 rounded"
+                        />
+                        <button
+                            type="submit"
+                            class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded"
+                        >
+                            Create Ticket
+                        </button>
+                    </form>
+                </div>
+                <!--Create TIcker Section-------------------------------------------------------------------------------------------->
+                <!--TIcket tabler Section-------------------------------------------------------------------------------------------->
+                <div th:if="${tickets != null}">
+                    <h2 class="text-xl font-bold mb-4">Your Tickets</h2>
+                    <table class="table-auto w-full bg-gray-700 rounded-lg shadow-md text-left">
+                        <thead class="bg-gray-800 text-white">
+                            <tr>
+                                <th class="px-4 py-2">Ticket ID</th>
+                                <th class="px-4 py-2">Bet Type</th>
+                                <th class="px-4 py-2">Numbers</th>
+                                <th class="px-4 py-2">Bet Amount</th>
+                                <th class="px-4 py-2">Prize Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="ticket : ${tickets}" class="border-b border-gray-600">
+                                <td class="px-4 py-2" th:text="${ticket.ticketId}"></td>
+                                <td class="px-4 py-2" th:text="${ticket.betType}"></td>
+                                <td class="px-4 py-2" th:text="${ticket.numbers}"></td>
+                                <td class="px-4 py-2" th:text="${ticket.betAmount}"></td>
+                                <td class="px-4 py-2" th:text="${ticket.prizeAmount}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!--TIcket tabler Section-------------------------------------------------------------------------------------------->
+            </div>
+        </main>
+        <script th:src="@{/js/ballpicker.js}"></script>
+    </body>
+</html>

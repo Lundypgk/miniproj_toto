@@ -1,0 +1,150 @@
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+        <title>
+            Did I Win TOTO?
+        </title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+
+    </head>
+    <body class="bg-gray-900 text-white">
+        <style type="text/css">
+         input[type=number]::-webkit-inner-spin-button,
+         input[type=number]::-webkit-outer-spin-button {
+             -webkit-appearance: none;
+             -moz-appearance: none;
+             appearance: none;
+             margin: 0;
+         }
+
+        </style>
+
+        <!--Header Section-------------------------------------------------------------------------------------------->
+        <header class="bg-gray-800 p-4 shadow-md">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-xl font-bold">
+                    Did I Win TOTO?
+                </h1>
+                <div class="flex space-x-4">
+                    <a href="/" class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition">
+                        <i class="fas fa-home"></i>
+                    </a>
+                    <a href="/history" class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition">
+                        <i class="fas fa-clock-rotate-left"></i>
+                    </a>
+                    <a href="/stats" class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </a>
+                    <a href="/location" class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition">
+                        <i class="fas fa-location-dot"></i>
+                    </a>
+                    <a href="/user" class="bg-gray-700 p-2 rounded hover:bg-gray-600 transition">
+                        <i class="fas fa-user"></i>
+                    </a>
+                </div>
+            </div>
+            <!--Header Section-------------------------------------------------------------------------------------------->
+        </header>
+        <main class="container mx-auto mt-10 px-6">
+            <div class="grid grid-cols-1 h-[80%] md:grid-cols-2 gap-8">
+
+                <!--Latest Results Section-------------------------------------------------------------------------------------------->
+                <div class="bg-gray-900 p-6 mt-6 rounded-lg shadow-md">
+                    <h2 class="text-5xl font-bold mt-4 mb-4">
+                        Latest TOTO Results
+                    </h2>
+                    <p class="text-sm text-gray-400 mt-12">
+                        Updated as of
+                    </p>
+                    <p class="text-lg mb-6 font-semibold" id="date">
+                        <span th:text="${latestData['Date']}"></span>
+                    </p>
+                    <div class="grid grid-cols-6 gap-4 mb-6" id="winning-numbers">
+                        <div class="bg-gray-700 p-4 rounded text-center" th:text="${latestData['Winning Number 1']}"></div>
+                        <div class="bg-gray-700 p-4 rounded text-center" th:text="${latestData['Winning Number 2']}"></div>
+                        <div class="bg-gray-700 p-4 rounded text-center" th:text="${latestData['Winning Number 3']}"></div>
+                        <div class="bg-gray-700 p-4 rounded text-center" th:text="${latestData['Winning Number 4']}"></div>
+                        <div class="bg-gray-700 p-4 rounded text-center" th:text="${latestData['Winning Number 5']}"></div>
+                        <div class="bg-gray-700 p-4 rounded text-center" th:text="${latestData['Winning Number 6']}"></div>
+                    </div>
+                    <div class="mb-4">
+                        <p class="text-sm text-gray-400 mb-2">
+                            Additional Number
+                        </p>
+                        <div class="bg-gray-700 p-4 rounded text-center font-semibold" id="supplementary-number" th:text="${latestData['Supplementary Number']}"></div>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-400 mb-2">
+                            Draw Date
+                        </p>
+                        <div class="mb-6 relative">
+                            <select id="draw-date" class="bg-gray-700 p-4 rounded text-white text-lg font-medium outline-none w-full focus:ring-2 focus:ring-blue-500 appearance-none pr-10">
+                                <option th:each="data : ${histData}" th:value="${data['Date']}" th:text="${data['Date']}"></option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a 1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Latest Results Section-------------------------------------------------------------------------------------------->
+                <div class="bg-gray-900 p-6 rounded-lg shadow-md">
+                    <!-- Countdown Section-------------------------------------------------------------------------------------------->
+                    <div class="bg-gray-800 p-6 rounded-lg shadow-md">
+                        <h2 class="text-4xl font-bold mb-4">
+                            Countdown To The Next Draw
+                        </h2>
+                        <p class="text-sm text-gray-400 mb-6">
+                            Time remaining for the next draw:
+                        </p>
+                        <div class="bg-gray-700 p-4 rounded text-center font-semibold text-2xl" id="countdown-timer">
+                            Loading...
+                        </div>
+                    </div>
+                    <!-- Countdown Section-------------------------------------------------------------------------------------------->
+                    <!-- Form Section-------------------------------------------------------------------------------------------->
+                    <div class="bg-gray-800 p-6 mt-4 rounded-lg shadow-md">
+                        <h2 class="text-4xl font-bold mb-4">Did I Win TOTO?</h2>
+                        <p class="text-sm text-gray-400 mb-6">Enter your number and select the draw date here!</p>
+                        <form id="checkTotoForm">
+                            <div class="grid grid-cols-6 gap-4 mb-6">
+                                <input type="number" min="1" max="49" class="bg-gray-700 p-4 rounded text-center text-white outline-none focus:ring-2 focus:ring-blue-500" placeholder="1" name="number1" required>
+                                <input type="number" min="1" max="49" class="bg-gray-700 p-4 rounded text-center text-white outline-none focus:ring-2 focus:ring-blue-500" placeholder="2" name="number2" required>
+                                <input type="number" min="1" max="49" class="bg-gray-700 p-4 rounded text-center text-white outline-none focus:ring-2 focus:ring-blue-500" placeholder="3" name="number3" required>
+                                <input type="number" min="1" max="49" class="bg-gray-700 p-4 rounded text-center text-white outline-none focus:ring-2 focus:ring-blue-500" placeholder="4" name="number4" required>
+                                <input type="number" min="1" max="49" class="bg-gray-700 p-4 rounded text-center text-white outline-none focus:ring-2 focus:ring-blue-500" placeholder="5" name="number5" required>
+                                <input type="number" min="1" max="49" class="bg-gray-700 p-4 rounded text-center text-white outline-none focus:ring-2 focus:ring-blue-500" placeholder="6" name="number6" required>
+                            </div>
+                            <div class="mb-6 relative">
+                                <select id="drawDate" name="drawDate" class="bg-gray-700 p-4 rounded text-white text-lg font-medium outline-none w-full focus:ring-2 focus:ring-blue-500 appearance-none pr-10" required>
+                                    <option value="" disabled selected>Select a draw date</option>
+                                    <option th:each="data : ${histData}" th:value="${data['Date']}" th:text="${data['Date']}"></option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                    <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    Check
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Form Section-------------------------------------------------------------------------------------------->
+                </div>
+            </div>
+        </main>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script th:src="@{/js/countdown.js}"></script>
+        <script th:src="@{/js/checkWin.js}"></script>
+        <script th:src="@{/js/datepicker.js}"></script>
+    </body>
+</html>
